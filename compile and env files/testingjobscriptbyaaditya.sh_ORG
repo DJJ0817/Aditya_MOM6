@@ -1,0 +1,35 @@
+#!/bin/sh
+#BSUB -q monsoon
+#BSUB -J TestingJobScriptbyAaditya
+#BSUB -n 512
+#BSUB -R "span[ptile=16]"
+#BSUB -o OutputLog_%J.out 
+#BSUB -e ErrorLog_%J.err 
+
+ulimit -s unlimited
+export OMP_NUM_THREADS=1
+export KMP_STACK_SIZE=1024m
+
+export I_MPI_FABRICS=shm:dapl
+export OMP_NUM_THREADS=1
+
+export SAVE_ALL_TASKS=no
+export LD_LIBRARY_PATH=/gpfs1/home/Libs/INTEL/DAPL/dapl-2.1.10/lib:$LD_LIBRARY_PATH
+ulimit -c unlimited
+#export I_MPI_HYDRA_BOOTSTRAP=ssh
+export I_MPI_DEBUG=5
+export I_MPI_DAPL_PROVIDER=ofa-v2-mlx4_0-1u
+export I_MPI_DAPL_UD=enable
+export I_MPI_DAPL_UD_DIRECT_COPY_THRESHOLD=2097152
+export I_MPI_FALLBACK=0
+export FORT_BUFFERED=yes
+
+cd /iitm5/junjie/MOM6/Indian/SPINUP_obs/2014070100/001
+#for host in $LSB_HOSTS; do
+#	echo $host >>machine
+#	echo $host >>machine
+#done
+#mpirun -hostfile machine  ./a.out
+##mpirun -hostfile machine  ./MOM6  
+mpirun -n 512  ./MOM6  
+#mpirun -n 8  /iitm5/junjie/MOM6/Indian/SPINUP_obs/2014070100/001/MOM6  
